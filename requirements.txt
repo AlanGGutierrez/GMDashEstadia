@@ -1,0 +1,10 @@
+datetime
+hydralit_components
+numpy
+pandas
+plotly.express
+plotly.graph_objects
+requests
+streamlit
+import Image
+st_lottie
