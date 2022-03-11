@@ -9,3 +9,4 @@ streamlit==1.5.1
 Pillow==9.0.1
 streamlit-lottie==0.0.3
 streamlit-aggrid==0.2.3.post2
+openpyxl==3.0.9
