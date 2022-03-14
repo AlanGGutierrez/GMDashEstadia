@@ -113,8 +113,8 @@ topdfnew = topdfnew.reset_index()
 tamdf = (len(topdfnew))
 for i in range(5):
     if tamdf < 5:
-        tamdf = tamdf +1
-        topdfnew.loc[tamdf] = ['Sin datos', '0', '0']
+        topdfnew.loc[tamdf] = ['Sin datos', 0, 0]
+        tamdf = tamdf + 1
 
 #st.dataframe(topdfnew)
 
@@ -409,10 +409,17 @@ st.markdown("""---""")
 # --------------------------------KPI---------
 sum_EA = df_selection["estadia_vs_arribo_sum"].sum()
 countEA = (df_selection['estadia_vs_arribo_sum'] > 0).sum()
+if countEA == 0:
+    estadiavsArribo = 0
+else:
+    estadiavsArribo = round(sum_EA / countEA, 1)
 sum_EC = df_selection["estadia_vs_cita_sum"].sum()
 countEC = (df_selection['estadia_vs_cita_sum'] > 0).sum()
-estadiavsArribo = round(sum_EA / countEA, 1)
-estadiavsCita = round(sum_EC / countEC, 1)
+
+if countEC == 0:
+    estadiavsCita = 0
+else:
+    estadiavsCita = round(sum_EC / countEC, 1)
 
 left_column1, left_column2, right_column1, right_column2 = st.columns([1, 2, 1, 2])
 with left_column1:
