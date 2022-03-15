@@ -8,6 +8,7 @@ import requests
 import streamlit as st
 from PIL import Image
 from streamlit_lottie import st_lottie
+import io
 from st_aggrid import AgGrid
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -65,6 +66,9 @@ img_control_Tower = Image.open("images/ControlTowerwhite.png")
 # ---- --------------------READ EXCEL ----------------------------
 
 # df = pd.concat(pd.read_excel(hoja_de_calculo, sheet_name=None), ignore_index=True)
+# url = "https://github.com/AlanGGutierrez/GMDashEstadia/blob/main/BaseDescargaFin.xlsx"
+# download = requests.get(url).content
+#df = pd.concat(pd.read_excel(io.StringIO(download.decode('utf-8'))))
 df = pd.concat(pd.read_excel(
     io="BaseDescargaFin.xlsx",
     engine="openpyxl",
