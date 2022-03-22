@@ -68,7 +68,7 @@ img_control_Tower = Image.open("images/ControlTowerwhite.png")
 # df = pd.concat(pd.read_excel(hoja_de_calculo, sheet_name=None), ignore_index=True)
 # url = "https://github.com/AlanGGutierrez/GMDashEstadia/blob/main/BaseDescargaFin.xlsx"
 # download = requests.get(url).content
-#df = pd.concat(pd.read_excel(io.StringIO(download.decode('utf-8'))))
+# df = pd.concat(pd.read_excel(io.StringIO(download.decode('utf-8'))))
 df = pd.concat(pd.read_excel(
     io="BaseDescargaFin.xlsx",
     engine="openpyxl",
@@ -80,9 +80,9 @@ df = pd.concat(pd.read_excel(
 # Dataframe General
 today = datetime.now()
 df["fecha_actual"] = today
-#df["fecha_dia"] = (df["CARGA_PROGRAMADA"].dt.strftime('%d-%m-%Y'))
+# df["fecha_dia"] = (df["CARGA_PROGRAMADA"].dt.strftime('%d-%m-%Y'))
 df["ARRIBO"].fillna(df["fecha_actual"], inplace=True)
-df.rename(columns={'ZONA VENTA':'ZONA_VENTA'}, inplace=True)
+df.rename(columns={'ZONA VENTA': 'ZONA_VENTA'}, inplace=True)
 df["CITA DE DESCARGA"].fillna(df["fecha_actual"], inplace=True)
 df['estadia_vs_arribo_sum'] = np.where(df['ESTATUS MONITOREO'] == "ENTREGADO", "0",
                                        (np.where(df['ESTATUS MONITOREO'] == "T.IDA", "0",
@@ -103,10 +103,11 @@ df = df.drop(df[df['ESTATUS MONITOREO'] == "CANCELADO "].index)
 df = df.drop(df[df['ESTATUS MONITOREO'] == "REPROGRAMAR"].index)
 
 csv = convert_df(df)
-#AgGrid(df)
+# AgGrid(df)
 
 # ---------------------------Dataframe top 5 de estadia----------------------------
-new_df = df.filter(["DESTINO", "ZONA_VENTA", "estadia_vs_arribo_sum", "estadia_vs_cita_sum", "ESTATUS MONITOREO", "TC REAL"])
+new_df = df.filter(
+    ["DESTINO", "ZONA_VENTA", "estadia_vs_arribo_sum", "estadia_vs_cita_sum", "ESTATUS MONITOREO", "TC REAL"])
 new_df_sum_estadia = new_df.groupby('DESTINO')['estadia_vs_arribo_sum'].agg(['sum', "mean"]).round(2)
 new_df_top_estadia = new_df_sum_estadia.sort_values('sum', ascending=False)
 
@@ -120,15 +121,14 @@ for i in range(5):
         topdfnew.loc[tamdf] = ['Sin datos', 0, 0]
         tamdf = tamdf + 1
 
-#st.dataframe(topdfnew)
+# st.dataframe(topdfnew)
 
 
 # ---------------------Dataframe datos adicionales------------------------
 new_df_top_estadia_top = new_df_top_estadia.reset_index()
 df_top = new_df.groupby(by=["DESTINO", "ESTATUS MONITOREO"]).size().to_frame('size').reset_index()
 # st.dataframe(new_df_top_estadia_top)
-#st.dataframe(df_top)
-
+# st.dataframe(df_top)
 
 
 # ------------------Top 1--------------------------------------
@@ -162,7 +162,7 @@ if len(out3) == 0:
 
 df_top1_tida_out = float(listToString(out3))
 
-sumT1 = np.where((new_df_top_estadia_top["DESTINO"] == df_top1) , new_df_top_estadia_top["sum"],["0"])
+sumT1 = np.where((new_df_top_estadia_top["DESTINO"] == df_top1), new_df_top_estadia_top["sum"], ["0"])
 bT1 = sumT1 > "0"
 outT1 = np.extract(bT1, sumT1)
 if len(outT1) == 0:
@@ -174,13 +174,12 @@ countT1 = float(df_top1_desc_out + df_top1_pend_out)
 if countT1 == 0:
     promedioT1 = 0
 else:
-    promedioT1 = round(df_top1_sumT1_out/countT1,2)
+    promedioT1 = round(df_top1_sumT1_out / countT1, 2)
 
-
-#print(dfpub.dtypes)
-placasT1 = dfpub.loc[dfpub["DESTINO"] == df_top1,["TC REAL"]]
+# print(dfpub.dtypes)
+placasT1 = dfpub.loc[dfpub["DESTINO"] == df_top1, ["TC REAL"]]
 # placas.reset_index()
-#print(placasT1["TC REAL"])
+# print(placasT1["TC REAL"])
 # placas = np.where((dfpub["estadia_vs_arribo_sum"]>0) & (df_top["DESTINO"] == df_top1), dfpub["TC REAL"],0)
 # print(placas)
 
@@ -214,7 +213,7 @@ if len(out32) == 0:
 
 df_top2_tida_out = float(listToString(out32))
 
-sumT2 = np.where((new_df_top_estadia_top["DESTINO"] == df_top2) , new_df_top_estadia_top["sum"],["0"])
+sumT2 = np.where((new_df_top_estadia_top["DESTINO"] == df_top2), new_df_top_estadia_top["sum"], ["0"])
 bT2 = sumT2 > "0"
 outT2 = np.extract(bT2, sumT2)
 if len(outT2) == 0:
@@ -226,10 +225,9 @@ countT2 = float(df_top2_desc_out + df_top2_pend_out)
 if countT2 == 0:
     promedioT2 = 0
 else:
-    promedioT2 = round(df_top2_sumT2_out/countT2,2)
+    promedioT2 = round(df_top2_sumT2_out / countT2, 2)
 
-
-placasT2 = dfpub.loc[dfpub["DESTINO"] == df_top2,["TC REAL"]]
+placasT2 = dfpub.loc[dfpub["DESTINO"] == df_top2, ["TC REAL"]]
 # ------------------------Top 3--------------------------------
 df_top3 = new_df_top_estadia_top.iloc[2]["DESTINO"]
 
@@ -260,7 +258,7 @@ if len(out33) == 0:
 
 df_top3_tida_out = float(listToString(out33))
 
-sumT3 = np.where((new_df_top_estadia_top["DESTINO"] == df_top3) , new_df_top_estadia_top["sum"],["0"])
+sumT3 = np.where((new_df_top_estadia_top["DESTINO"] == df_top3), new_df_top_estadia_top["sum"], ["0"])
 bT3 = sumT3 > "0"
 outT3 = np.extract(bT3, sumT3)
 if len(outT3) == 0:
@@ -272,10 +270,9 @@ countT3 = float(df_top3_desc_out + df_top3_pend_out)
 if countT3 == 0:
     promedioT3 = 0
 else:
-    promedioT3 = round(df_top3_sumT3_out/countT3,2)
+    promedioT3 = round(df_top3_sumT3_out / countT3, 2)
 
-
-placasT3 = dfpub.loc[dfpub["DESTINO"] == df_top3,["TC REAL"]]
+placasT3 = dfpub.loc[dfpub["DESTINO"] == df_top3, ["TC REAL"]]
 # ----------------------------Top 4--------------------------
 df_top4 = new_df_top_estadia_top.iloc[3]["DESTINO"]
 
@@ -306,7 +303,7 @@ if len(out34) == 0:
 
 df_top4_tida_out = float(listToString(out34))
 
-sumT4 = np.where((new_df_top_estadia_top["DESTINO"] == df_top4) , new_df_top_estadia_top["sum"],["0"])
+sumT4 = np.where((new_df_top_estadia_top["DESTINO"] == df_top4), new_df_top_estadia_top["sum"], ["0"])
 bT4 = sumT4 > "0"
 outT4 = np.extract(bT4, sumT4)
 if len(outT4) == 0:
@@ -318,11 +315,9 @@ countT4 = float(df_top4_desc_out + df_top4_pend_out)
 if countT4 == 0:
     promedioT4 = 0
 else:
-    promedioT4 = round(df_top4_sumT4_out/countT4,2)
+    promedioT4 = round(df_top4_sumT4_out / countT4, 2)
 
-
-
-placasT4 = dfpub.loc[dfpub["DESTINO"] == df_top4,["TC REAL"]]
+placasT4 = dfpub.loc[dfpub["DESTINO"] == df_top4, ["TC REAL"]]
 # ----------------------------Top 5------------------------------
 df_top5 = new_df_top_estadia_top.iloc[4]["DESTINO"]
 
@@ -353,8 +348,7 @@ if len(out35) == 0:
 
 df_top5_tida_out = float(listToString(out35))
 
-
-sumT5 = np.where((new_df_top_estadia_top["DESTINO"] == df_top5) , new_df_top_estadia_top["sum"],["0"])
+sumT5 = np.where((new_df_top_estadia_top["DESTINO"] == df_top5), new_df_top_estadia_top["sum"], ["0"])
 bT5 = sumT5 > "0"
 outT5 = np.extract(bT5, sumT5)
 if len(outT5) == 0:
@@ -366,10 +360,9 @@ countT5 = float(df_top5_desc_out + df_top5_pend_out)
 if countT5 == 0:
     promedioT5 = 0
 else:
-    promedioT5 = round(df_top5_sumT5_out/countT5,2)
+    promedioT5 = round(df_top5_sumT5_out / countT5, 2)
 
-
-placasT5 = dfpub.loc[dfpub["DESTINO"] == df_top5,["TC REAL"]]
+placasT5 = dfpub.loc[dfpub["DESTINO"] == df_top5, ["TC REAL"]]
 
 # ---- -----------------------------SIDEBAR ---------------------------------
 st.sidebar.header("Filtra aquí:")
@@ -386,7 +379,7 @@ zona = st.sidebar.multiselect(
     default=df["ZONA_VENTA"].unique()
 )
 
-#fi = st.sidebar.date_input('Fecha Inicial:', key="fecha_inicial")
+# fi = st.sidebar.date_input('Fecha Inicial:', key="fecha_inicial")
 # ff = st.sidebar.date_input('Fecha Final:', key="fecha_final")
 
 df_selection = df.query(
@@ -400,13 +393,13 @@ df_selection = df.query(
 
 left_column, mid_column, right_column = st.columns(3)
 with left_column:
-        st_lottie(lottie_car, height=300, key="car")
+    st_lottie(lottie_car, height=300, key="car")
 with mid_column:
-        st.markdown("<h1 style='text-align: center; color: white;'>Estadias Dashboard</h1>", unsafe_allow_html=True)
-        st.image(img_control_Tower)
+    st.markdown("<h1 style='text-align: center; color: white;'>Estadias Dashboard</h1>", unsafe_allow_html=True)
+    st.image(img_control_Tower)
 
 with right_column:
-        st_lottie(lottie_chart, height=300, key="chart")
+    st_lottie(lottie_chart, height=300, key="chart")
 
 st.markdown("""---""")
 
@@ -569,13 +562,13 @@ grafico_estadia_arribo_acum.update_layout(
     yaxis=(dict(showgrid=False)),
 )
 
-left_column,mid_column, right_column = st.columns(3)
+left_column, mid_column, right_column = st.columns(3)
 left_column.plotly_chart(grafico_estadia_arribo, use_container_width=True)
 mid_column.plotly_chart(grafico_estadia_cita, use_container_width=True)
 right_column.plotly_chart(grafico_zona, use_container_width=True)
 st.markdown("""---""")
 
-left_column,mid_column, right_column = st.columns(3)
+left_column, mid_column, right_column = st.columns(3)
 with left_column:
     st.download_button(
         label="Descargar CSV",
@@ -584,15 +577,11 @@ with left_column:
         mime='text/csv',
     )
 
-
-
-
 # grouped_multiple = dfesArr.groupby(['DESTINO', 'TC REAL']).agg({'estadia_vs_arribo_acum': ['mean', 'min', 'max']})
 # grouped_multiple.columns = ['age_mean', 'age_min', 'age_max']
 # grouped_multiple = grouped_multiple.reset_index()
 # #placas = dfesArr.groupby(["DESTINO"])
 # st.dataframe(grouped_multiple)
-
 
 
 # ------------------------- HIDE STREAMLIT STYLE ------------------------
