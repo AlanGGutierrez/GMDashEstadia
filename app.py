@@ -10,9 +10,32 @@ from PIL import Image
 from streamlit_lottie import st_lottie
 import io
 from st_aggrid import AgGrid
+import os
+import platform
+import os.path, time
+
+
+
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="Estadia Dashboard", page_icon=":bar_chart:", layout="wide")
+
+def creation_date(path_to_file):
+    """
+    Try to get the date that a file was created, falling back to when it was
+    last modified if that isn't possible.
+    See http://stackoverflow.com/a/39501288/1709587 for explanation.
+    """
+    if platform.system() == 'Windows':
+        return os.path.getctime(path_to_file)
+    else:
+        stat = os.stat(path_to_file)
+        try:
+            return stat.st_birthtime
+        except AttributeError:
+            # We're probably on Linux. No easy way to get creation dates here,
+            # so we'll settle for when its content was last modified.
+            return stat.st_mtime
 
 
 def convert_df(df):
@@ -104,6 +127,8 @@ df = df.drop(df[df['ESTATUS MONITOREO'] == "REPROGRAMAR"].index)
 
 csv = convert_df(df)
 # AgGrid(df)
+ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("BaseDescargaFin.xlsx"))
+#print("created: %s" % time.ctime(os.path.getctime("BaseDescargaFin.xlsx")))
 
 # ---------------------------Dataframe top 5 de estadia----------------------------
 new_df = df.filter(
@@ -576,6 +601,8 @@ with left_column:
         file_name=f'df_{today}.csv',
         mime='text/csv',
     )
+with mid_column:
+    st.text(ultModi)
 
 # grouped_multiple = dfesArr.groupby(['DESTINO', 'TC REAL']).agg({'estadia_vs_arribo_acum': ['mean', 'min', 'max']})
 # grouped_multiple.columns = ['age_mean', 'age_min', 'age_max']
