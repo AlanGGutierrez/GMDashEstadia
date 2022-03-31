@@ -139,7 +139,7 @@ new_df_top_estadia = new_df_sum_estadia.sort_values('sum', ascending=False)
 
 options = ['PEND.DESCARGA', 'DESCARGANDO']
 df_pendesc_desc = df.loc[df['ESTATUS MONITOREO'].isin(options)]
-AgGrid(df_pendesc_desc)
+#AgGrid(df_pendesc_desc)
 dfpub = df.loc[df['estadia_vs_arribo_sum'] > 0]
 topdfnew = dfpub.groupby('DESTINO')['estadia_vs_arribo_sum'].agg(['sum', "mean"]).round(2)
 topdfnew = topdfnew.sort_values('mean', ascending=False)
@@ -150,14 +150,15 @@ for i in range(5):
         topdfnew.loc[tamdf] = ['Sin datos', 0, 0]
         tamdf = tamdf + 1
 
-st.dataframe(topdfnew)
+
+#st.dataframe(topdfnew)
 
 
 # ---------------------Dataframe datos adicionales------------------------
 new_df_top_estadia_top = new_df_top_estadia.reset_index()
 df_top = new_df.groupby(by=["DESTINO", "ESTATUS MONITOREO"]).size().to_frame('size').reset_index()
 #st.dataframe(new_df_top_estadia_top)
-st.dataframe(df_top)
+#st.dataframe(df_top)
 
 
 # ------------------Top 1--------------------------------------
