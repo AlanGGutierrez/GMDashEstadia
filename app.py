@@ -136,6 +136,10 @@ new_df = df.filter(
 new_df_sum_estadia = new_df.groupby('DESTINO')['estadia_vs_arribo_sum'].agg(['sum', "mean"]).round(2)
 new_df_top_estadia = new_df_sum_estadia.sort_values('sum', ascending=False)
 
+
+options = ['PEND.DESCARGA', 'DESCARGANDO']
+df_pendesc_desc = df.loc[df['ESTATUS MONITOREO'].isin(options)]
+AgGrid(df_pendesc_desc)
 dfpub = df.loc[df['estadia_vs_arribo_sum'] > 0]
 topdfnew = dfpub.groupby('DESTINO')['estadia_vs_arribo_sum'].agg(['sum', "mean"]).round(2)
 topdfnew = topdfnew.sort_values('mean', ascending=False)
@@ -146,18 +150,18 @@ for i in range(5):
         topdfnew.loc[tamdf] = ['Sin datos', 0, 0]
         tamdf = tamdf + 1
 
-# st.dataframe(topdfnew)
+st.dataframe(topdfnew)
 
 
 # ---------------------Dataframe datos adicionales------------------------
 new_df_top_estadia_top = new_df_top_estadia.reset_index()
 df_top = new_df.groupby(by=["DESTINO", "ESTATUS MONITOREO"]).size().to_frame('size').reset_index()
-# st.dataframe(new_df_top_estadia_top)
-# st.dataframe(df_top)
+#st.dataframe(new_df_top_estadia_top)
+st.dataframe(df_top)
 
 
 # ------------------Top 1--------------------------------------
-df_top1 = new_df_top_estadia_top.iloc[0]["DESTINO"]
+df_top1 = topdfnew.iloc[0]["DESTINO"]
 
 df_top1_pend = np.where((df_top["DESTINO"] == df_top1) & (df_top["ESTATUS MONITOREO"] == "PEND.DESCARGA"),
                         df_top["size"], ["0"])
@@ -187,7 +191,7 @@ if len(out3) == 0:
 
 df_top1_tida_out = float(listToString(out3))
 
-sumT1 = np.where((new_df_top_estadia_top["DESTINO"] == df_top1), new_df_top_estadia_top["sum"], ["0"])
+sumT1 = np.where((topdfnew["DESTINO"] == df_top1), topdfnew["sum"], ["0"])
 bT1 = sumT1 > "0"
 outT1 = np.extract(bT1, sumT1)
 if len(outT1) == 0:
@@ -202,14 +206,16 @@ else:
     promedioT1 = round(df_top1_sumT1_out / countT1, 2)
 
 # print(dfpub.dtypes)
-placasT1 = dfpub.loc[dfpub["DESTINO"] == df_top1, ["TC REAL"]]
+placasT1 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top1, ["TC REAL"]]
 # placas.reset_index()
+#st.dataframe(dfpub)
+# print(df_top1)
 # print(placasT1["TC REAL"])
-# placas = np.where((dfpub["estadia_vs_arribo_sum"]>0) & (df_top["DESTINO"] == df_top1), dfpub["TC REAL"],0)
-# print(placas)
+#placas = np.where((dfpub["estadia_vs_arribo_sum"]>0) & (df_top["DESTINO"] == df_top1), dfpub["TC REAL"],0)
+#print(placas)
 
 # --------------------------- Top 2---------------------------------
-df_top2 = new_df_top_estadia_top.iloc[1]["DESTINO"]
+df_top2 = topdfnew.iloc[1]["DESTINO"]
 
 df_top2_pend = np.where((df_top["DESTINO"] == df_top2) & (df_top["ESTATUS MONITOREO"] == "PEND.DESCARGA"),
                         df_top["size"], ["0"])
@@ -238,7 +244,7 @@ if len(out32) == 0:
 
 df_top2_tida_out = float(listToString(out32))
 
-sumT2 = np.where((new_df_top_estadia_top["DESTINO"] == df_top2), new_df_top_estadia_top["sum"], ["0"])
+sumT2 = np.where((topdfnew["DESTINO"] == df_top2), topdfnew["sum"], ["0"])
 bT2 = sumT2 > "0"
 outT2 = np.extract(bT2, sumT2)
 if len(outT2) == 0:
@@ -252,9 +258,11 @@ if countT2 == 0:
 else:
     promedioT2 = round(df_top2_sumT2_out / countT2, 2)
 
-placasT2 = dfpub.loc[dfpub["DESTINO"] == df_top2, ["TC REAL"]]
+placasT2 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top2, ["TC REAL"]]
+# print(df_top2)
+# print(placasT2["TC REAL"])
 # ------------------------Top 3--------------------------------
-df_top3 = new_df_top_estadia_top.iloc[2]["DESTINO"]
+df_top3 = topdfnew.iloc[2]["DESTINO"]
 
 df_top3_pend = np.where((df_top["DESTINO"] == df_top3) & (df_top["ESTATUS MONITOREO"] == "PEND.DESCARGA"),
                         df_top["size"], ["0"])
@@ -283,7 +291,7 @@ if len(out33) == 0:
 
 df_top3_tida_out = float(listToString(out33))
 
-sumT3 = np.where((new_df_top_estadia_top["DESTINO"] == df_top3), new_df_top_estadia_top["sum"], ["0"])
+sumT3 = np.where((topdfnew["DESTINO"] == df_top3), topdfnew["sum"], ["0"])
 bT3 = sumT3 > "0"
 outT3 = np.extract(bT3, sumT3)
 if len(outT3) == 0:
@@ -297,9 +305,11 @@ if countT3 == 0:
 else:
     promedioT3 = round(df_top3_sumT3_out / countT3, 2)
 
-placasT3 = dfpub.loc[dfpub["DESTINO"] == df_top3, ["TC REAL"]]
+placasT3 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top3, ["TC REAL"]]
+print(df_top3)
+print(placasT3["TC REAL"])
 # ----------------------------Top 4--------------------------
-df_top4 = new_df_top_estadia_top.iloc[3]["DESTINO"]
+df_top4 = topdfnew.iloc[3]["DESTINO"]
 
 df_top4_pend = np.where((df_top["DESTINO"] == df_top4) & (df_top["ESTATUS MONITOREO"] == "PEND.DESCARGA"),
                         df_top["size"], ["0"])
@@ -328,7 +338,7 @@ if len(out34) == 0:
 
 df_top4_tida_out = float(listToString(out34))
 
-sumT4 = np.where((new_df_top_estadia_top["DESTINO"] == df_top4), new_df_top_estadia_top["sum"], ["0"])
+sumT4 = np.where((topdfnew["DESTINO"] == df_top4), topdfnew["sum"], ["0"])
 bT4 = sumT4 > "0"
 outT4 = np.extract(bT4, sumT4)
 if len(outT4) == 0:
@@ -342,9 +352,11 @@ if countT4 == 0:
 else:
     promedioT4 = round(df_top4_sumT4_out / countT4, 2)
 
-placasT4 = dfpub.loc[dfpub["DESTINO"] == df_top4, ["TC REAL"]]
+placasT4 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top4, ["TC REAL"]]
+# print(df_top4)
+# print(placasT4["TC REAL"])
 # ----------------------------Top 5------------------------------
-df_top5 = new_df_top_estadia_top.iloc[4]["DESTINO"]
+df_top5 = topdfnew.iloc[4]["DESTINO"]
 
 df_top5_pend = np.where((df_top["DESTINO"] == df_top5) & (df_top["ESTATUS MONITOREO"] == "PEND.DESCARGA"),
                         df_top["size"], ["0"])
@@ -373,7 +385,7 @@ if len(out35) == 0:
 
 df_top5_tida_out = float(listToString(out35))
 
-sumT5 = np.where((new_df_top_estadia_top["DESTINO"] == df_top5), new_df_top_estadia_top["sum"], ["0"])
+sumT5 = np.where((topdfnew["DESTINO"] == df_top5), topdfnew["sum"], ["0"])
 bT5 = sumT5 > "0"
 outT5 = np.extract(bT5, sumT5)
 if len(outT5) == 0:
@@ -387,8 +399,9 @@ if countT5 == 0:
 else:
     promedioT5 = round(df_top5_sumT5_out / countT5, 2)
 
-placasT5 = dfpub.loc[dfpub["DESTINO"] == df_top5, ["TC REAL"]]
-
+placasT5 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top5, ["TC REAL"]]
+# print(df_top5)
+# print(placasT5["TC REAL"])
 # ---- -----------------------------SIDEBAR ---------------------------------
 st.sidebar.header("Filtra aquí:")
 
