@@ -634,8 +634,8 @@ with left_column:
         file_name=f'df_{today}.csv',
         mime='text/csv',
     )
-with mid_column:
-    st.text(ultModi)
+#with mid_column:
+#st.text(ultModi)
 
 # grouped_multiple = dfesArr.groupby(['DESTINO', 'TC REAL']).agg({'estadia_vs_arribo_acum': ['mean', 'min', 'max']})
 # grouped_multiple.columns = ['age_mean', 'age_min', 'age_max']
