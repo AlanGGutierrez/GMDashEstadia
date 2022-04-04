@@ -80,6 +80,15 @@ def listToString(s):
         # return string
     return str1
 
+def ceil_date(date, **kwargs):
+    secs = pd.Timedelta(**kwargs).total_seconds()
+    return datetime.fromtimestamp(date.timestamp() + secs - date.timestamp() % secs)
+
+def floor_date(date, **kwargs):
+    secs = pd.Timedelta(**kwargs).total_seconds()
+    return datetime.fromtimestamp(date.timestamp() - date.timestamp() % secs)
+
+
 
 # -------------------------Hidralit theme-------------------------
 
@@ -143,8 +152,8 @@ df = df.drop(df[df['ESTATUS MONITOREO'] == "REPROGRAMAR"].index)
 
 csv = convert_df(df)
 # AgGrid(df)
-#ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("C:/Users/alang/OneDrive/GM/DashEstadia/BaseDescargaFin.xlsx"))
-#print("created: %s" % time.ctime(os.path.getctime("BaseDescargaFin.xlsx")))
+top_date = ceil_date(today, minutes=30)
+down_date = floor_date(today, minutes=30)
 
 # ---------------------------Dataframe top 5 de estadia----------------------------
 new_df = df.filter(
@@ -326,8 +335,7 @@ else:
     promedioT3 = round(df_top3_sumT3_out / countT3, 2)
 
 placasT3 = df_pendesc_desc.loc[df_pendesc_desc["DESTINO"] == df_top3, ["TC REAL"]]
-print(df_top3)
-print(placasT3["TC REAL"])
+
 # ----------------------------Top 4--------------------------
 df_top4 = topdfnew.iloc[3]["DESTINO"]
 
@@ -634,8 +642,8 @@ with left_column:
         file_name=f'df_{today}.csv',
         mime='text/csv',
     )
-#with mid_column:
-#st.text(ultModi)
+with mid_column:
+    st.text(f"Datos actualizados entre:\n {down_date} y \n {top_date}")
 
 # grouped_multiple = dfesArr.groupby(['DESTINO', 'TC REAL']).agg({'estadia_vs_arribo_acum': ['mean', 'min', 'max']})
 # grouped_multiple.columns = ['age_mean', 'age_min', 'age_max']
