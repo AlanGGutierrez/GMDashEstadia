@@ -13,12 +13,22 @@ from st_aggrid import AgGrid
 import os
 import platform
 import os.path, time
+import base64
+
+
 
 
 
 
 # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="Estadia Dashboard", page_icon=":bar_chart:", layout="wide")
+
+def create_onedrive_directdownload (onedrive_link):
+    data_bytes64 = base64.b64encode(bytes(onedrive_link, 'utf-8'))
+    data_bytes64_String = data_bytes64.decode('utf-8').replace('/','_').replace('+','-').rstrip("=")
+    resultUrl = f"https://api.onedrive.com/v1.0/shares/u!{data_bytes64_String}/root/content"
+    return resultUrl
+
 
 def creation_date(path_to_file):
     """
@@ -86,6 +96,12 @@ lottie_truck = load_lottieurl("https://assets3.lottiefiles.com/packages/lf20_hut
 lottie_list = load_lottieurl("https://assets7.lottiefiles.com/packages/lf20_emujvwjt.json")
 img_control_Tower = Image.open("images/ControlTowerwhite.png")
 
+
+#-----Read onedrive Excel-------------
+
+onedrive_link = "https://1drv.ms/x/s!AsyQPQRa2P2OjHVroHS7U3bCiEsW?e=z37n9J"
+onedrive_directlink = create_onedrive_directdownload(onedrive_link)
+
 # ---- --------------------READ EXCEL ----------------------------
 
 # df = pd.concat(pd.read_excel(hoja_de_calculo, sheet_name=None), ignore_index=True)
@@ -93,7 +109,7 @@ img_control_Tower = Image.open("images/ControlTowerwhite.png")
 # download = requests.get(url).content
 # df = pd.concat(pd.read_excel(io.StringIO(download.decode('utf-8'))))
 df = pd.concat(pd.read_excel(
-    io="BaseDescargaFin.xlsx",
+    io=onedrive_directlink,
     engine="openpyxl",
     sheet_name=None,
     skiprows=0,
@@ -127,7 +143,7 @@ df = df.drop(df[df['ESTATUS MONITOREO'] == "REPROGRAMAR"].index)
 
 csv = convert_df(df)
 # AgGrid(df)
-ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("BaseDescargaFin.xlsx"))
+ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("C:/Users/alang/OneDrive/GM/DashEstadia/BaseDescargaFin.xlsx"))
 #print("created: %s" % time.ctime(os.path.getctime("BaseDescargaFin.xlsx")))
 
 # ---------------------------Dataframe top 5 de estadia----------------------------
@@ -145,9 +161,11 @@ topdfnew = dfpub.groupby('DESTINO')['estadia_vs_arribo_sum'].agg(['sum', "mean"]
 topdfnew = topdfnew.sort_values('mean', ascending=False)
 topdfnew = topdfnew.reset_index()
 tamdf = (len(topdfnew))
+conti = 0
 for i in range(5):
     if tamdf < 5:
-        topdfnew.loc[tamdf] = ['Sin datos', 0, 0]
+        conti = conti + 1
+        topdfnew.loc[tamdf] = [f'Sin datos{conti}', 0, 0]
         tamdf = tamdf + 1
 
 
@@ -295,8 +313,9 @@ df_top3_tida_out = float(listToString(out33))
 sumT3 = np.where((topdfnew["DESTINO"] == df_top3), topdfnew["sum"], ["0"])
 bT3 = sumT3 > "0"
 outT3 = np.extract(bT3, sumT3)
-if len(outT3) == 0:
+if len(outT3) == 0.0:
     outT3 = "0"
+
 
 df_top3_sumT3_out = float(listToString(outT3))
 
