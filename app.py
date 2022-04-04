@@ -143,7 +143,7 @@ df = df.drop(df[df['ESTATUS MONITOREO'] == "REPROGRAMAR"].index)
 
 csv = convert_df(df)
 # AgGrid(df)
-ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("C:/Users/alang/OneDrive/GM/DashEstadia/BaseDescargaFin.xlsx"))
+#ultModi = "Ultima Actualización: %s" % time.ctime(os.path.getmtime("C:/Users/alang/OneDrive/GM/DashEstadia/BaseDescargaFin.xlsx"))
 #print("created: %s" % time.ctime(os.path.getctime("BaseDescargaFin.xlsx")))
 
 # ---------------------------Dataframe top 5 de estadia----------------------------
